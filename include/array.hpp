@@ -13,9 +13,9 @@ class Array
 {
 public:
 	T_* data;
-	int size() {return _size;}
-	int ndim() {return _ndim;}
-	std::vector<int> shape() {return _shape;}
+	int size() const {return _size;}
+	int ndim() const {return _ndim;}
+	std::vector<int> shape() const {return _shape;}
 	const Array<T_> T() const;
 	const Array<T_> at(std::vector<int> idx) const;
 
@@ -33,17 +33,17 @@ public:
 	template<typename U_> friend Array<U_> operator+(U_ lhs, Array<U_> rhs);
 	Array<T_>& operator+=(const Array<T_>& rhs);
 	Array<T_>& operator+=(const T_& rhs);
-	Array<T_> operator++();
-	Array<T_> operator++(int notused);
+	Array<T_>& operator++();
+	const Array<T_> operator++(int notused);
 	// -
 	const Array<T_> operator-(const Array<T_>& rhs) const;
 	const Array<T_> operator-(const T_& rhs) const;
 	const Array<T_> operator-() const;
-	//friend Array<T_> operator-(T_& lhs, Array<T_>& rhs);
+	template<typename U_> friend Array<U_> operator-(U_& lhs, Array<U_>& rhs);
 	Array<T_>& operator-=(const Array<T_>& rhs);
 	Array<T_>& operator-=(const T_& rhs);
-	Array<T_> operator--();
-	Array<T_> operator--(int notused);
+	Array<T_>& operator--();
+	const Array<T_> operator--(int notused);
 	// *
 	const Array<T_> operator*(const Array<T_>& rhs) const;
 	const Array<T_> operator*(const T_& rhs) const;
@@ -62,6 +62,8 @@ public:
 	// []
 	const T_& operator[](const long i) const;
 	T_& operator[](const long i);
+	// <<
+	template<typename U_> friend std::ostream& operator<<(std::ostream& os, const Array<U_>& rhs);
 
 private:
 	int _size;
@@ -170,12 +172,95 @@ Array<T_> operator+(T_ lhs, Array<T_> rhs)
 	for (int i=0; i<rhs.size(); ++i) ret.data[i] = lhs + rhs.data[i];
 	return ret;
 }
+
+
+
+template<typename T_> 
+Array<T_>& Array<T_>::operator+=(const Array<T_>& rhs)
+{
+	checkSameShape(rhs);
+	for (int i=0; i<_size; ++i) this->data[i] += rhs.data[i];
+	return (*this);
+}
+
+
+template<typename T_> 
+Array<T_>& Array<T_>::operator+=(const T_& rhs)
+{
+	for (int i=0; i<_size; ++i) data[i] += rhs;
+	return (*this);
+}
+
+
+template<typename T_> 
+Array<T_>& Array<T_>::operator++()
+{
+	for (int i=0; i<_size; ++i) data[i]++;
+	return (*this);
+}
+
+
+
+template<typename T_> 
+const Array<T_> Array<T_>::operator++(int notused)
+{
+	const Array<T_> tmp = *this;
+	++(*this);
+	return tmp;
+}
+
+// -
+template<typename T_> 
+const Array<T_> Array<T_>::operator-(const Array<T_>& rhs) const
+{
+	checkSameShape(rhs);
+	Array<T_> ret(_shape);
+	for (int i=0; i<_size; ++i) ret.data[i] = data[i] - rhs.data[i];
+	return ret;
+}
+
+
+template<typename T_> 
+const Array<T_> Array<T_>::operator-(const T_& rhs) const
+{
+	Array<T_> ret(_shape);
+	for (int i=0; i<_size; ++i) ret.data[i] = data[i] - rhs;
+	return ret;
+}
 /*
-Array<T_>& operator+=(const Array<T_>& rhs);
-Array<T_>& operator+=(const T_& rhs);
-Array<T_> operator++();
-Array<T_> operator++(int notused);
+template<typename T_> 
+const Array<T_> Array<T_>::operator-() const;
+template<typename U_> friend Array<U_> operator-(U_& lhs, Array<U_>& rhs);
+Array<T_>& Array<T_>::operator-=(const Array<T_>& rhs);
+template<typename T_> 
+Array<T_>& Array<T_>::operator-=(const T_& rhs);
 */
+template<typename T_> 
+Array<T_>& Array<T_>::operator--()
+{
+	for (int i=0; i<_size; ++i) data[i]--;
+	return (*this);
+}
+
+
+template<typename T_> 
+const Array<T_> Array<T_>::operator--(int notused)
+{
+	const Array<T_> tmp = *this;
+	--(*this);
+	return tmp;
+}
+
+// <<
+template<typename T_>
+std::ostream& operator<<(std::ostream& os, const Array<T_>& rhs)
+{
+	for (int i=0; i<rhs.size(); ++i)
+		os << rhs.data[i] << ", ";
+	return os;
+}
+
+
 
 
 /* private finction */
