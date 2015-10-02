@@ -47,13 +47,13 @@ public:
 	// *
 	const Array<T_> operator*(const Array<T_>& rhs) const;
 	const Array<T_> operator*(const T_& rhs) const;
-	//friend Array<T_> operator*(T_& lhs, Array<T_>& rhs);
+	template<typename U_> friend Array<U_> operator*(U_& lhs, Array<U_>& rhs);
 	Array<T_>& operator*=(const Array<T_>& rhs);
 	Array<T_>& operator*=(const T_& rhs);
 	// /
 	const Array<T_> operator/(const Array<T_>& rhs) const;
 	const Array<T_> operator/(const T_& rhs) const;
-	//friend Array<T_> operator/(T_& lhs, Array<T_>& rhs);
+	template<typename U_>friend Array<U_> operator/(U_& lhs, Array<U_>& rhs);
 	Array<T_>& operator/=(const Array<T_>& rhs);
 	Array<T_>& operator/=(const T_& rhs);
 	// boolean
@@ -227,14 +227,46 @@ const Array<T_> Array<T_>::operator-(const T_& rhs) const
 	for (int i=0; i<_size; ++i) ret.data[i] = data[i] - rhs;
 	return ret;
 }
-/*
+
+
+
 template<typename T_> 
-const Array<T_> Array<T_>::operator-() const;
-template<typename U_> friend Array<U_> operator-(U_& lhs, Array<U_>& rhs);
-Array<T_>& Array<T_>::operator-=(const Array<T_>& rhs);
+const Array<T_> Array<T_>::operator-() const
+{
+	Array<T_> ret(_shape);
+	for (int i=0; i<_size; ++i) ret.data[i] = -data[i];
+	return ret;
+}
+
+
+
+template<typename T_>
+Array<T_> operator-(T_ lhs, Array<T_> rhs)
+{
+	Array<T_> ret(rhs.shape());
+	for (int i=0; i<ret._size; ++i) ret.data[i] = lhs - rhs.data[i];
+	return ret;
+}
+
+
+
 template<typename T_> 
-Array<T_>& Array<T_>::operator-=(const T_& rhs);
-*/
+Array<T_>& Array<T_>::operator-=(const Array<T_>& rhs)
+{
+	checkSameShape(rhs);
+	for (int i=0; i<_size; ++i) data[i] -= rhs.data[i];
+	return (*this);
+}
+
+
+template<typename T_> 
+Array<T_>& Array<T_>::operator-=(const T_& rhs)
+{
+	for (int i=0; i<_size; ++i) data[i] -= rhs;
+	return (*this);
+}
+
+
 template<typename T_> 
 Array<T_>& Array<T_>::operator--()
 {
@@ -250,6 +282,52 @@ const Array<T_> Array<T_>::operator--(int notused)
 	--(*this);
 	return tmp;
 }
+
+
+// *
+template<typename T_>
+const Array<T_> Array<T_>::operator*(const Array<T_>& rhs) const
+{
+	Array<T_> ret(_shape);
+	for (int i=0; i<ret._size; ++i) ret.data[i] = data[i] * rhs.data[i];
+	return ret;
+}
+
+
+template<typename T_>
+const Array<T_> Array<T_>::operator*(const T_& rhs) const
+{
+	Array<T_> ret(_shape);
+	for (int i=0; i<ret._size; ++i) ret.data[i] = data[i] * rhs;
+	return ret;
+}
+
+
+template<typename T_>
+Array<T_> operator*(T_& lhs, Array<T_>& rhs)
+{
+	Array<T_> ret(rhs.shape());
+	for (int i=0; i<ret._size; ++i) ret.data[i] = lhs * rhs.data[i];
+	return ret;
+}
+
+
+template<typename T_>
+Array<T_>& Array<T_>::operator*=(const Array<T_>& rhs)
+{
+	for (int i=0; i<_size; ++i) data[i] *= rhs.data[i];
+	return (*this);
+}
+
+
+template<typename T_>
+Array<T_>& Array<T_>::operator*=(const T_& rhs)
+{
+	for (int i=0; i<_size; ++i) data[i] *= rhs;
+	return (*this);
+}
+
+
 
 // <<
 template<typename T_>
