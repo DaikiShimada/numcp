@@ -394,7 +394,7 @@ bool Array<T_>::operator==(const Array<T_>& rhs) const
 	if (_ndim!=rhs._ndim || _size!=rhs._size) return false;
 	for (int i=0; i<_ndim; ++i)
 	{
-		if (shape[i] != rhs._shape[i]) return false;
+		if (_shape[i] != rhs._shape[i]) return false;
 	}
 
 	for (int i=0; i<_size; ++i)
