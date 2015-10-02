@@ -357,7 +357,7 @@ template<typename T_>
 const Array<T_> Array<T_>::operator/(const T_& rhs) const
 {
 	Array<T_> ret(_shape);
-	for (int i=0; i<ret_size; ++i) ret.data[i] = data[i] / rhs;
+	for (int i=0; i<ret._size; ++i) ret.data[i] = data[i] / rhs;
 	return ret;
 }
 
@@ -370,12 +370,46 @@ Array<T_> operator/(T_& lhs, Array<T_>& rhs)
 	return ret;
 }
 
-/*
+
 template<typename T_>
-Array<T_>& Array<T_>::operator/=(const Array<T_>& rhs);
+Array<T_>& Array<T_>::operator/=(const Array<T_>& rhs)
+{
+	checkSameShape(rhs);
+	for (int i=0; i<_size; ++i) data[i] /= rhs.data[i];
+	return (*this);
+}
+
+
 template<typename T_>
-Array<T_>& Array<T_>::operator/=(const T_& rhs);
-*/
+Array<T_>& Array<T_>::operator/=(const T_& rhs)
+{
+	for (int i=0; i<_size; ++i) data[i] /= rhs;
+	return (*this);
+}
+
+// boolean operations
+template<typename T_>
+bool Array<T_>::operator==(const Array<T_>& rhs) const
+{
+	if (_ndim!=rhs._ndim || _size!=rhs._size) return false;
+	for (int i=0; i<_ndim; ++i)
+	{
+		if (shape[i] != rhs._shape[i]) return false;
+	}
+
+	for (int i=0; i<_size; ++i)
+	{
+		if (data[i] != rhs.data[i]) return false;
+	}
+	return true;
+}
+
+template<typename T_>
+bool Array<T_>::operator!=(const Array<T_>& rhs) const
+{
+	return !((*this)==rhs);
+}
+
 
 /* private finction */
 template<typename T_> 
