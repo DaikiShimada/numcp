@@ -2,11 +2,13 @@
 #define NUMCP_ARRAY
 
 #include <vector>
+#include <algorithm>
 #include <numeric>
 #include <functional>
 #include <glog/logging.h>
 
 namespace numcp {
+
 
 template<typename T_>
 class Array
@@ -17,7 +19,8 @@ public:
 	int ndim() const {return _ndim;}
 	std::vector<int> shape() const {return _shape;}
 	const int adr(const std::vector<int> idx) const;
-	const Array<T_> T() const;
+	Array<T_> swapaxes(const int axis_1, const int axis_2) const;
+	Array<T_> T() const;
 	const Array<T_> at(std::vector<int> idx) const;
 
 	Array();
@@ -76,6 +79,9 @@ private:
 	void checkSameShape(const Array<T_>& rhs) const;
 
 };
+
+template<typename T_> 
+std::ostream& recursive_array_disp(const Array<T_>& ary, std::vector<int>& ary_shape, std::vector<int>& idx, int dim);
 
 
 
@@ -186,7 +192,26 @@ const int Array<T_>::adr(const std::vector<int> idx) const
 	return ret;
 }
 
+/*
+template<typename T_> 
+Array<T_> Array<T_>::swapaxes(const int axis_1, const int axis_2) const
+{
+	CHECK_LE(2, _ndim);
+	std::vector<int> swshape (_shape);
+	int tmp = swshape[axis_1];
+	swshape[axis_1] = swshape[axis_2];
+	swshape[axis_2] = tmp;
 
+	Array<T_> swary (swshape);
+	for (int i=0; i<_ndim; ++i)
+	{
+		for (int j=0; 
+		swary[] = data[adr()];
+	}
+
+	return swary;
+}
+*/
 /*
 template<typename T_> 
 const Array<T_> Array<T_>::T() const
@@ -385,14 +410,6 @@ Array<T_>& Array<T_>::operator*=(const T_& rhs)
 
 
 
-// <<
-template<typename T_>
-std::ostream& operator<<(std::ostream& os, const Array<T_>& rhs)
-{
-	for (int i=0; i<rhs.size(); ++i)
-		os << rhs.data[i] << ", ";
-	return os;
-}
 
 
 // /
@@ -478,6 +495,64 @@ T_& Array<T_>::operator[](const std::vector<int> idx)
 	return data[adr(idx)];
 }
 
+
+
+// <<
+template<typename T_>
+std::ostream& operator<<(std::ostream& os, const Array<T_>& rhs)
+{
+	std::vector<int> idx (rhs.ndim(), 0);
+	std::vector<int> rhs_shape = rhs.shape();
+	int d = 0;
+
+	return recursive_array_disp(rhs, rhs_shape, idx, d, os);
+
+	/*
+	for (int i=0; i<rhs.ndim(); ++i)
+	{
+		for (int d=i; d<rhs.ndim(); ++d) os << "[";
+		for (int j=0; j<rhs_shape[i]; ++j)
+		{
+			os << rhs[idx];
+			if (j != rhs_shape[i]-1) os << ", ";
+			idx[i]++;	
+		}
+		idx[i] = 0;
+		os << "]";
+		if (i != rhs.ndim()-1) os << ", ";
+		os << std::endl;
+	}
+	*/
+
+}
+
+
+template<typename T_> 
+std::ostream& recursive_array_disp(const Array<T_>& ary, std::vector<int>& ary_shape, std::vector<int>& idx, int dim, std::ostream& os)
+{
+	os << "[";
+	if (dim == ary_shape.size()-1)
+	{
+		for (idx[dim]=0; idx[dim]<ary_shape[dim]; ++idx[dim])
+		{
+			os << ary[idx];
+			if (idx[dim] != ary_shape[dim]-1) os << ", ";
+		}
+		idx[dim] = 0;
+	}
+	else
+	{
+		for (idx[dim]=0; idx[dim]<ary_shape[dim]; ++idx[dim])
+		{
+			recursive_array_disp(ary, ary_shape, idx, dim+1, os);
+			if (idx[dim] != ary_shape[dim]-1) os << ", " << std::endl;
+			if (dim == 0 && idx[dim]!=ary_shape[dim]-1) os << std::endl;
+		}
+		idx[dim] = 0;
+	}
+	os << "]";
+	return os;
+}
 
 /* private finction */
 template<typename T_> 

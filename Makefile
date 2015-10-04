@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -O3 -std=c++11
+CXXFLAGS = -O0 -std=c++11
 LIBS = -lglog
 INCLUDE = -Iinclude
 HEADER_DIR := include
