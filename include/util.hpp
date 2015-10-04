@@ -10,6 +10,7 @@ namespace numcp {
 //template<typename T_> Array<T_> dot (Array<T_>& lhs, Array<T_>& rhs); 
 Array<double> dot (const Array<double>& lhs, const Array<double>& rhs); // double support only
 template<typename T_> T_ norm (const Array<T_>& ary); 
+template<typename T_> T_ sum (const Array<T_>& ary); 
 template<typename T_> T_ mean (const Array<T_>& ary); 
 template<typename T_> T_ max (const Array<T_>& ary); 
 template<typename T_> T_ min (const Array<T_>& ary); 
@@ -61,6 +62,50 @@ Array<double> dot (const Array<double>& lhs, const Array<double>& rhs)
 					 ret.data,
 					 ret.shape()[0]);
 	}
+	return ret;
+}
+
+
+template<typename T_>
+T_ norm (const Array<T_>& ary)
+{
+	T_ ret = ary.data[0] * ary.data[0];
+	for (int i=1; i<ary.size(); ++i) ret += ary.data[i] * ary.data[i];
+	return std::sqrt(ret);
+}
+
+
+template<typename T_>
+T_ sum (const Array<T_>& ary)
+{
+	T_ ret = ary.data[0];
+	for (int i=1; i<ary.size(); ++i) ret += ary.data[i];
+	return ret;
+}
+
+
+
+template<typename T_>
+T_ mean (const Array<T_>& ary)
+{
+	return sum(ary) / ary.size(); 
+}
+
+
+template<typename T_>
+T_ max (const Array<T_>& ary)
+{
+	T_ ret = ary.data[0];
+	for (int i=1; i<ary.size(); ++i) ret = (ret > ary.data[i]) ? ret : ary.data[i];
+	return ret;
+}
+
+
+template<typename T_>
+T_ min (const Array<T_>& ary)
+{
+	T_ ret = ary.data[0];
+	for (int i=1; i<ary.size(); ++i) ret = (ret < ary.data[i]) ? ret : ary.data[i];
 	return ret;
 }
 
