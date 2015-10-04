@@ -21,7 +21,6 @@ public:
 	const int adr(const std::vector<int> idx) const;
 	Array<T_> swapaxes(const int axis_1, const int axis_2) const;
 	Array<T_> T() const;
-	Array<T_> at(std::vector<int> idx) const;
 
 	Array();
 	Array(const std::vector<int>& _shape_);

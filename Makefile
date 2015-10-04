@@ -1,6 +1,6 @@
 CXX = g++
 CXXFLAGS = -O0 -std=c++11
-LIBS = -lglog
+LIBS = -lglog -lcblas
 INCLUDE = -Iinclude
 HEADER_DIR := include
 SRC_HEAD := $(wildcard $(HEADER_DIR)/*.hpp)
