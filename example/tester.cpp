@@ -14,7 +14,10 @@ int main(int argc, char const* argv[])
 	a -= b;
 	std::cout << a << std::endl;
 	b -= 9;
+	b[{0,1}] = 999.;
 	std::cout << b << std::endl;
+
+	std::cout << b[{0,1}] << std::endl;
 	
 	return 0;
 }

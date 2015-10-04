@@ -16,7 +16,7 @@ public:
 	int size() const {return _size;}
 	int ndim() const {return _ndim;}
 	std::vector<int> shape() const {return _shape;}
-	const int convertToAdr(const std::vector<int> idx) const;
+	const int adr(const std::vector<int> idx) const;
 	const Array<T_> T() const;
 	const Array<T_> at(std::vector<int> idx) const;
 
@@ -155,7 +155,7 @@ Array<T_>::~Array()
 
 /* public functions */
 template<typename T_> 
-const int Array<T_>::convertToAdr(const std::vector<int> idx) const
+const int Array<T_>::adr(const std::vector<int> idx) const
 {
 	// check idx
 	CHECK_EQ(idx.size(), _ndim);
@@ -165,15 +165,35 @@ const int Array<T_>::convertToAdr(const std::vector<int> idx) const
 	}
 
 	// return adr indx of data
-	
+	if (idx.size() == 1) return idx[0];
+
+	std::vector<int> memidx (idx);
+	if (memidx.size() >= 2)
+	{
+		int tmp = memidx[memidx.size()-1];
+		memidx[memidx.size()-1] = memidx[memidx.size()-2];
+		memidx[memidx.size()-2] = tmp;
+	}
+
+	int ret = 0;
+	int past_dim = 1;
+	for (int i=0; i<memidx.size(); ++i)
+	{
+		ret += past_dim * memidx[memidx.size() -1 - i]; 
+		past_dim *= _memshape[i];
+	}
+
+	return ret;
 }
 
 
+/*
 template<typename T_> 
 const Array<T_> Array<T_>::T() const
 {
 	
 }
+*/
 
 
 
@@ -444,6 +464,20 @@ bool Array<T_>::operator!=(const Array<T_>& rhs) const
 	return !((*this)==rhs);
 }
 
+// access operations
+template<typename T_>
+const T_& Array<T_>::operator[](const std::vector<int> idx) const
+{
+	return data[adr(idx)];
+}
+
+
+template<typename T_>
+T_& Array<T_>::operator[](const std::vector<int> idx)
+{
+	return data[adr(idx)];
+}
+
 
 /* private finction */
 template<typename T_> 
@@ -458,7 +492,7 @@ template<typename T_>
 void Array<T_>::initMemshape()
 {
 	_memshape = std::vector<int>(_shape);
-	if (_memshape.size() > 2)
+	if (_memshape.size() >= 2)
 	{
 		int tmp = _memshape[_memshape.size()-1];
 		_memshape[_memshape.size()-1] = _memshape[_memshape.size()-2];
