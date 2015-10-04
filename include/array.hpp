@@ -21,7 +21,7 @@ public:
 	const int adr(const std::vector<int> idx) const;
 	Array<T_> swapaxes(const int axis_1, const int axis_2) const;
 	Array<T_> T() const;
-	const Array<T_> at(std::vector<int> idx) const;
+	Array<T_> at(std::vector<int> idx) const;
 
 	Array();
 	Array(const std::vector<int>& _shape_);
@@ -186,13 +186,12 @@ const int Array<T_>::adr(const std::vector<int> idx) const
 	for (int i=0; i<memidx.size(); ++i)
 	{
 		ret += past_dim * memidx[memidx.size() -1 - i]; 
-		past_dim *= _memshape[i];
+		past_dim *= _memshape[memidx.size() -1 - i];
 	}
 
 	return ret;
 }
 
-/*
 template<typename T_> 
 Array<T_> Array<T_>::swapaxes(const int axis_1, const int axis_2) const
 {
@@ -203,22 +202,40 @@ Array<T_> Array<T_>::swapaxes(const int axis_1, const int axis_2) const
 	swshape[axis_2] = tmp;
 
 	Array<T_> swary (swshape);
-	for (int i=0; i<_ndim; ++i)
+	std::vector<int> idx(_ndim, 0);
+
+	std::function<void (int)> f;
+	f = [&](int dim)
 	{
-		for (int j=0; 
-		swary[] = data[adr()];
-	}
+		for (idx[dim]=0; idx[dim]<_shape[dim]; ++idx[dim])
+		{
+			if (dim == _ndim-1)
+			{
+				std::vector<int> sw_idx(idx);
+				sw_idx[axis_1] = idx[axis_2];
+				sw_idx[axis_2] = idx[axis_1];
+				swary[sw_idx] = data[adr(idx)];
+			}
+			else
+			{
+				f(dim+1);
+			}
+		}
+		idx[dim] = 0;
+	};
+	
+	f(0);
 
 	return swary;
 }
-*/
-/*
+
+
 template<typename T_> 
-const Array<T_> Array<T_>::T() const
+Array<T_> Array<T_>::T() const
 {
-	
+	CHECK_LE(2, _ndim);
+	return this->swapaxes(0, _ndim-1);	
 }
-*/
 
 
 
@@ -506,24 +523,6 @@ std::ostream& operator<<(std::ostream& os, const Array<T_>& rhs)
 	int d = 0;
 
 	return recursive_array_disp(rhs, rhs_shape, idx, d, os);
-
-	/*
-	for (int i=0; i<rhs.ndim(); ++i)
-	{
-		for (int d=i; d<rhs.ndim(); ++d) os << "[";
-		for (int j=0; j<rhs_shape[i]; ++j)
-		{
-			os << rhs[idx];
-			if (j != rhs_shape[i]-1) os << ", ";
-			idx[i]++;	
-		}
-		idx[i] = 0;
-		os << "]";
-		if (i != rhs.ndim()-1) os << ", ";
-		os << std::endl;
-	}
-	*/
-
 }
 
 
@@ -535,6 +534,12 @@ std::ostream& recursive_array_disp(const Array<T_>& ary, std::vector<int>& ary_s
 	{
 		for (idx[dim]=0; idx[dim]<ary_shape[dim]; ++idx[dim])
 		{
+			// start for debug
+//			for (std::vector<int>::iterator i=idx.begin(); i!=idx.end(); ++i)
+//				os << *i << "/";
+//			os << "  ";
+			// end for debug
+
 			os << ary[idx];
 			if (idx[dim] != ary_shape[dim]-1) os << ", ";
 		}
