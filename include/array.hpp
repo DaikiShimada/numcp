@@ -141,7 +141,14 @@ Array<T_>::~Array()
 	std::vector<int>().swap(_shape);
 }
 
-
+/* public functions */
+/*
+const Array<T_> T() const
+{
+	Array<T_> ret();
+	return ret;
+}
+*/
 
 /* operators */
 // +
