@@ -43,7 +43,6 @@ cv::Mat vec2mat (std::vector<T_>& src, int c, int r)
 		std::vector<T_> ch_vec(i, i+partial_len);
 		planes.push_back(cv::Mat(ch_vec).t());
 	}
-
 	cv::merge(planes, tmp);
 	tmp = tmp.reshape(c, r);
 	cv::flip(tmp.t(), dst, -1);

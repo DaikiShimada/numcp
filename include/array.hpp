@@ -127,7 +127,7 @@ template<typename T_>
 Array<T_>::Array(const std::vector<T_>& src, const std::vector<int>& _shape_)
 {
 	this->_shape = _shape_;
-	this->ndim = _shape_.size();
+	this->_ndim = _shape_.size();
 	this->_size = std::accumulate(_shape_.begin(), _shape_.end(), 1, std::multiplies<int>());
 	CHECK_EQ(this->_size, src.size());
 	this->data = new T_[_size];
@@ -176,8 +176,7 @@ Array<T_>::~Array()
 template<typename T_> 
 std::vector<T_> Array<T_>::vector() const
 {
-	std::size_t s = sizeof(data) / sizeof(data[0]);
-	return std::vector<T_>(data, data+s);
+	return std::vector<T_>(data, data+_size);
 }
 
 
