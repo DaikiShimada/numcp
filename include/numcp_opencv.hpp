@@ -2,7 +2,7 @@
 #define NUMCP_OPENCV
 
 #include <opencv2/opencv.hpp>
-#include <numcp.h>
+#include "numcp.h"
 #include <iostream>
 
 namespace numcp {
