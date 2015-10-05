@@ -4,7 +4,7 @@
 #include <vector>
 #include <cmath>
 #include <cblas.h>
-#include <array.hpp>
+#include "array.hpp"
 
 namespace numcp {
 
