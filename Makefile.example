@@ -1,7 +1,12 @@
 CXX = g++
-CXXFLAGS = -O3 -std=c++11
-LIBS = -lglog
-INCLUDE = -Iinclude
+CXXFLAGS = -O0 -std=c++11
+LIBS = -lglog -lcblas `pkg-config --libs opencv`
+
+# for linux (Ubuntu 14.04)
+#INCLUDE = -Iinclude
+# for Mac OS (homebrew)
+#INCLUDE = -Iinclude -I/usr/local/opt/openblas/include `pkg-config --cflags opencv`
+
 HEADER_DIR := include
 SRC_HEAD := $(wildcard $(HEADER_DIR)/*.hpp)
 EXAMPLE_DIR := example
