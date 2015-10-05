@@ -54,7 +54,7 @@ cv::Mat vec2mat (std::vector<T_>& src, int c, int r)
 template<typename T_>
 Array<T_> mat2array (cv::Mat& src)
 {
-	int ndim = src.chennels()==1 ? 2 : 3;
+	int ndim = src.channels()==1 ? 2 : 3;
 	std::vector<int> shape(ndim);
 	if (ndim == 2)
 	{
@@ -63,12 +63,12 @@ Array<T_> mat2array (cv::Mat& src)
 	}
 	else
 	{
-		shape[0] = src.chennels();
+		shape[0] = src.channels();
 		shape[1] = src.rows;
 		shape[2] = src.cols;
 	}
 
-	std::vector<T_> matvec =  mat2vec(src);
+	std::vector<T_> matvec =  mat2vec<T_>(src);
 	return Array<T_>(matvec, shape);
 }
 
@@ -78,7 +78,7 @@ cv::Mat array2mat (Array<T_>& src)
 	int c = src.ndim()==2 ? 1 : src.shape()[0];
 	int r = src.ndim()==2 ? src.shape()[0] : src.shape()[1];
 	std::vector<T_> vec = src.vector();
-	return vec2mat(vec, c, r);
+	return vec2mat<T_>(vec, c, r);
 }
 
 } // namespace numcp
