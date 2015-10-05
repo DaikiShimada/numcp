@@ -2,6 +2,7 @@
 #define NUMCP_UTIL
 
 #include <vector>
+#include <cmath>
 #include <cblas.h>
 #include <array.hpp>
 

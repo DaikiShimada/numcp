@@ -18,6 +18,7 @@ public:
 	int size() const {return _size;}
 	int ndim() const {return _ndim;}
 	std::vector<int> shape() const {return _shape;}
+	std::vector<T_> vector() const;
 	const int adr(const std::vector<int> idx) const;
 	Array<T_> swapaxes(const int axis_1, const int axis_2) const;
 	Array<T_> T() const;
@@ -25,6 +26,7 @@ public:
 	Array();
 	Array(const std::vector<int>& _shape_);
 	Array(const std::vector<int>& _shape_, const T_ value);
+	Array(const std::vector<T_>& src, const std::vector<int>& _shape_);
 	Array(const Array<T_>& obj);
 	Array<T_>& operator=(const Array<T_>& obj);
 	~Array();
@@ -121,6 +123,18 @@ Array<T_>::Array(const std::vector<int>& _shape_, const T_ value)
 	initMemshape();
 }
 
+template<typename T_> 
+Array<T_>::Array(const std::vector<T_>& src, const std::vector<int>& _shape_)
+{
+	this->_shape = _shape_;
+	this->ndim = _shape_.size();
+	this->_size = std::accumulate(_shape_.begin(), _shape_.end(), 1, std::multiplies<int>());
+	CHECK_EQ(this->_size, src.size());
+	this->data = new T_[_size];
+	for (int i=0; i<this->_size; ++i) this->data[i] = src.at(i);
+	
+	initMemshape();
+}
 
 
 template<typename T_> 
@@ -159,6 +173,14 @@ Array<T_>::~Array()
 
 
 /* public functions */
+template<typename T_> 
+std::vector<T_> Array<T_>::vector() const
+{
+	std::size_t s = sizeof(data) / sizeof(data[0]);
+	return std::vector<T_>(data, data+s);
+}
+
+
 template<typename T_> 
 const int Array<T_>::adr(const std::vector<int> idx) const
 {

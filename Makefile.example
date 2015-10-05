@@ -1,7 +1,12 @@
 CXX = g++
 CXXFLAGS = -O0 -std=c++11
 LIBS = -lglog -lcblas
-INCLUDE = -Iinclude
+
+# for linux (Ubuntu 14.04)
+#INCLUDE = -Iinclude
+# for Mac OS (homebrew)
+#INCLUDE = -Iinclude -I/usr/local/opt/openblas/include
+
 HEADER_DIR := include
 SRC_HEAD := $(wildcard $(HEADER_DIR)/*.hpp)
 EXAMPLE_DIR := example
