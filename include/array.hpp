@@ -29,7 +29,7 @@ public:
 	Array(const std::vector<T_>& src, const std::vector<int>& _shape_);
 	Array(const Array<T_>& obj);
 	Array<T_>& operator=(const Array<T_>& obj);
-	~Array();
+	virtual ~Array();
 
 	/* operators */
 	// +
