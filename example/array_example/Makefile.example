@@ -1,0 +1,19 @@
+CXX = g++
+CXXFLAGS = -O0 -g -std=c++11
+LIBS = -lglog -lcblas
+
+# for linux (Ubuntu 14.04)
+#INCLUDE = -I../../include
+# for Mac OS (homebrew)
+#INCLUDE = -I../../include -I/usr/local/opt/openblas/include
+
+EXAMPLE_SRC := $(wildcard *.cpp)
+EXAMPLE_BIN := $(EXAMPLE_SRC:.cpp=.bin)
+
+.PHONY: all 
+
+all : $(EXAMPLE_BIN)
+
+# make example
+%.bin : %.cpp
+	$(CXX) $(CXXFLAGS) $(INCLUDE) -o $@ $< $(LIBS)

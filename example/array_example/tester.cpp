@@ -1,6 +1,6 @@
 #include <iostream>
 #include <vector>
-#include "../include/numcp.h"
+#include "numcp.h"
 
 
 int main(int argc, char const* argv[])
