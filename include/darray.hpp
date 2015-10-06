@@ -1,6 +1,9 @@
 #ifndef NUMCP_DARRAY
 #define NUMCP_DARRAY
 
+#include <cuda_runtime.h>
+#include <cublas_v2.h>
+#include "numcp_cblas_helper.h"
 #include "array.hpp"
 
 namespace numcp {
