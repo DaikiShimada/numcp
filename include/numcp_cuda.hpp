@@ -2,6 +2,7 @@
 #define NUMCP_CUDA
 
 #include "darray.hpp"
+#include "util.hpp"
 
 namespace numcp {
 

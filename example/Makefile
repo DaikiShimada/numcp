@@ -1,5 +1,5 @@
 # src directory
-SECTIONS := array_example opencv_example 
+SECTIONS := array_example opencv_example darray_example
 
 .PHONY: all $(SECTIONS)
 

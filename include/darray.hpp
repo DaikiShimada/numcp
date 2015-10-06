@@ -13,6 +13,7 @@ class Darray : public Array
 {
 public:
 	T_* dev_data;
+	std::size_t dev_size;
 
 	Darray();
 	Darray(const std::vector<int>& _shape_);
@@ -25,7 +26,26 @@ public:
 
 	void to_device();
 	void to_host();
+
+private:
+	DeviceManager* dev_mng;
 };
+
+
+template<typename T_> 
+Darray()
+{
+	std::size_t dev_size = sizeof(*data) * _size;
+	cudaMalloc ((void**)&dev_data, dev_size);
+}
+
+/* public functions */
+template<typename T_> 
+void Array<T_>::to_device()
+{
+	CUDA_SAFE_CALL(cudaMemcpy(dev_data, data, dev_size, cudaMemcpyHostToDevice); 
+}
+
 
 } // namespace numcp
 #endif

@@ -49,6 +49,8 @@ do { \
 	} \
 } while(0)
 
+#include <iostream>
+#include <string>
 #include <cuda_runtime.h>
 #include <cublas_v2.h>
 #include <glog/logging.h>
@@ -62,7 +64,13 @@ public:
 	DeviceManager(const int deviceID);
 	DeviceManager(const DeviceManager& obj);
 	DeviceManager& operator=(const DeviceManager& obj);
+	friend std::ostream& operator<<(std::ostream& os, const DeviceManager& rhs);
 	~DeviceManager();
+
+	int getDeviceID() const {return deviceID;}
+	std::string getDeviceName() const {return deviceProp.name;}
+	int getDeviceMajor() const {return deviceProp.major;}
+	int getDeviceMinor() const {return deviceProp.minor;}
 
 	void deviceSet();
 	void deviceReset();
@@ -88,7 +96,7 @@ DeviceManager::DeviceManager(const int deviceID)
 }
 
 
-DeviceManagr::DeviceManager(const DeviceManager& obj)
+DeviceManager::DeviceManager(const DeviceManager& obj)
 {
 	this->deviceID = obj.deviceID;
 	this->deviceProp = obj.deviceProp;
@@ -106,6 +114,12 @@ DeviceManager& DeviceManager::operator=(const DeviceManager& obj)
 	return (*this);
 }
 
+
+std::ostream& operator<<(std::ostream& os, const DeviceManager& rhs)
+{
+	os << "GPU Device " << rhs.getDeviceID() << ": " << rhs.getDeviceName() << " with compute capability " << rhs.getDeviceMajor() << "." << rhs.getDeviceMinor();
+	return os;	
+}
 
 DeviceManager::~DeviceManager() {}
 

@@ -257,14 +257,6 @@ Array<T_> Array<T_>::T() const
 	return this->swapaxes(0, _ndim-1);	
 }
 
-/* public functions */
-/*
-const Array<T_> T() const
-{
-	Array<T_> ret();
-	return ret;
-}
-*/
 
 /* operators */
 // +
