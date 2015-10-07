@@ -1,0 +1,19 @@
+CXX = nvcc
+CXXFLAGS = -O0 -g -std=c++11
+LIBS = -L/use/local/cuda/lib64 -lglog -lcblas -lcublas `pkg-config --libs opencv`
+
+# for linux (Ubuntu 14.04)
+#INCLUDE = -I../../include -I/usr/local/cuda/include
+# for Mac OS (homebrew)
+#INCLUDE = -I../../include -I/usr/local/opt/openblas/include -I/usr/local/cuda/include `pkg-config --cflags opencv`
+
+EXAMPLE_SRC := $(wildcard *.cpp)
+EXAMPLE_BIN := $(EXAMPLE_SRC:.cpp=.bin)
+
+.PHONY: all 
+
+all : $(EXAMPLE_BIN)
+
+# make example
+%.bin : %.cpp
+	$(CXX) $(CXXFLAGS) $(INCLUDE) -o $@ $< $(LIBS)
