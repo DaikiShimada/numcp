@@ -6,5 +6,6 @@ if [ ! -e ${incdir} ]; then
 	sudo mkdir ${incdir}
 fi
 
-cp ./include/numcp/*.hpp ${incdir}
+cp ./include/*.hpp ${incdir}
+cp ./include/*.h ${incdir}
 echo "Installation done."

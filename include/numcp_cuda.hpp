@@ -9,8 +9,8 @@ namespace numcp {
 
 Darray<double> cudot(const Darray<double>& lhs, const Darray<double>& rhs); 
 Darray<float> cudot(const Darray<float>& lhs, const Darray<float>& rhs); 
-template<typename T_> T_ cunorm (const Darray<T_>& ary); 
-template<typename T_> T_ cusum (const Darray<T_>& ary); 
+double cunorm2 (const Darray<double>& ary); 
+float cunorm2 (const Darray<float>& ary); 
 
 
 Darray<double> cudot (const Darray<double>& lhs, const Darray<double>& rhs)
@@ -30,7 +30,8 @@ Darray<double> cudot (const Darray<double>& lhs, const Darray<double>& rhs)
 		CHECK_EQ(lhs.size(), rhs.size());
 		ret = Darray<double>(lhs.getDeviceManager(), {1});
 		
-		// using cblas ddot
+		// using cublas ddot
+		lhs.deviceSet();
 		cublasDdot (DeviceManager::handle,
 				    lhs.size(),
 				    lhs.data,
@@ -47,6 +48,7 @@ Darray<double> cudot (const Darray<double>& lhs, const Darray<double>& rhs)
 		ret = Darray<double>(lhs.getDeviceManager(), {lhs.shape()[0], rhs.shape()[1]});
 		
 		// using cblas dgemm
+		lhs.deviceSet();
 		const double alpha = 1.;
 		const double beta = 0.;
 		CUBLAS_SAFE_CALL(
@@ -87,7 +89,8 @@ Darray<float> cudot (const Darray<float>& lhs, const Darray<float>& rhs)
 		CHECK_EQ(lhs.size(), rhs.size());
 		ret = Darray<float>(lhs.getDeviceManager(), {1});
 		
-		// using cblas ddot
+		// using cublas sdot
+		lhs.deviceSet();
 		cublasSdot (DeviceManager::handle,
 				    lhs.size(),
 				    lhs.data,
@@ -103,7 +106,8 @@ Darray<float> cudot (const Darray<float>& lhs, const Darray<float>& rhs)
 		CHECK_EQ(lhs.shape()[1], rhs.shape()[0]);
 		ret = Darray<float>(lhs.getDeviceManager(), {lhs.shape()[0], rhs.shape()[1]});
 		
-		// using cblas dgemm
+		// using cublas sgemm
+		lhs.deviceSet();
 		const float alpha = 1.;
 		const float beta = 0.;
 		CUBLAS_SAFE_CALL(
@@ -125,5 +129,36 @@ Darray<float> cudot (const Darray<float>& lhs, const Darray<float>& rhs)
 	}
 	return ret;
 }
+
+
+double cunorm2 (const Darray<double>& ary)
+{
+	ary.deviceSet();
+	double ret;
+	CUBLAS_SAFE_CALL(
+			cublasDnrm2 (DeviceManager::handle,
+						 ary.size(),
+						 ary.dev_data,
+						 1,
+						 &ret)
+	);
+	return ret;
+}
+
+
+float cunorm2 (const Darray<float>& ary)
+{
+	ary.deviceSet();
+	float ret;
+	CUBLAS_SAFE_CALL(
+			cublasDnrm2 (DeviceManager::handle,
+						 ary.size(),
+						 ary.dev_data,
+						 1,
+						 &ret)
+	);
+	return ret;
+}
+
 } // namespace numcp
 #endif

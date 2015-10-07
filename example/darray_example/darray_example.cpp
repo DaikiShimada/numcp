@@ -17,9 +17,15 @@ int main(int argc, char const* argv[])
 	numcp::Darray<double> bd(dev_mng, {300,300});
 
 	benchmark("CPU(double) ver.") { numcp::dot(ad, bd); }
-	benchmark("GPU(float) ver.") { numcp::cudot(as, bs); }
+	benchmark("GPU(float) ver.") 
+	{ 
+		as.to_device();
+		bs.to_device();
+		numcp::cudot(as, bs);
+	}
 	benchmark("GPU(double) ver.") { numcp::cudot(ad, bd); }
 
 	dev_mng.deviceReset();
+
 	return 0;
 }

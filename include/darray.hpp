@@ -26,6 +26,7 @@ public:
 	std::size_t getDev_size() const {return dev_size; }
 	const DeviceManager& getDeviceManager() const { return dev_mng; }
 
+	void deviceSet() const {dev_mng.deviceSet();}
 	void to_device();
 	void to_host();
 

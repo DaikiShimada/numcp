@@ -1,9 +1,9 @@
 # src directory
-EXAMPLE_DIR := example
+DIRS := example
 
-.PHONY: all $(EXAMPLE_DIR)
+.PHONY: all $(DIRS)
 
-all: $(EXAMPLE_DIR)
+all: $(DIRS)
 
-$(EXAMPLE_DIR):
+$(DIRS):
 	$(MAKE) -C $@

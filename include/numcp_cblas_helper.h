@@ -76,8 +76,8 @@ public:
 	int getDeviceMajor() const {return deviceProp.major;}
 	int getDeviceMinor() const {return deviceProp.minor;}
 
-	void deviceSet();
-	void deviceReset();
+	void deviceSet() const;
+	void deviceReset() const;
 
 private:
 	int deviceID;
@@ -126,12 +126,12 @@ std::ostream& operator<<(std::ostream& os, const DeviceManager& rhs)
 
 DeviceManager::~DeviceManager() {}
 
-void DeviceManager::deviceSet()
+void DeviceManager::deviceSet() const
 {
 	CUDA_SAFE_CALL(cudaSetDevice(deviceID));
 }
 
-void DeviceManager::deviceReset()
+void DeviceManager::deviceReset() const
 {
 	cudaDeviceReset();
 }
