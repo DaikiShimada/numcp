@@ -151,7 +151,7 @@ float cunorm2 (const Darray<float>& ary)
 	ary.deviceSet();
 	float ret;
 	CUBLAS_SAFE_CALL(
-			cublasDnrm2 (DeviceManager::handle,
+			cublasSnrm2 (DeviceManager::handle,
 						 ary.size(),
 						 ary.dev_data,
 						 1,
