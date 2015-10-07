@@ -70,7 +70,7 @@ public:
 	// <<
 	template<typename U_> friend std::ostream& operator<<(std::ostream& os, const Array<U_>& rhs);
 
-private:
+protected:
 	int _size;	//! Arrayの要素数, _shapeの総積に等しい
 	int _ndim;	//! Arrayの次元数
 	std::vector<int> _shape;	//! Arrayの形状, {..., チャネル, 行数, 列数}

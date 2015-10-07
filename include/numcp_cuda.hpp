@@ -1,6 +1,7 @@
 #ifndef NUMCP_CUDA
 #define NUMCP_CUDA
 
+#include "numcp_cblas_helper.h"
 #include "darray.hpp"
 #include "util.hpp"
 

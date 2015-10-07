@@ -1,6 +1,12 @@
 #ifndef NUMCP_CUDA_HELPER
 #define NUMCP_CUDA_HELPER
 
+#include <iostream>
+#include <string>
+#include <cuda_runtime.h>
+#include <cublas_v2.h>
+#include <glog/logging.h>
+
 #define CUDA_SAFE_CALL(func) \
 do { \
 	cudaError_t err = (func); \
@@ -49,11 +55,6 @@ do { \
 	} \
 } while(0)
 
-#include <iostream>
-#include <string>
-#include <cuda_runtime.h>
-#include <cublas_v2.h>
-#include <glog/logging.h>
 
 namespace numcp {
 
