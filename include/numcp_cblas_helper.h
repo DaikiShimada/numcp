@@ -61,6 +61,9 @@ namespace numcp {
 class DeviceManager
 {
 public:
+	static cublasHandle_t handle;
+	static void CreateHandle() {CUBLAS_SAFE_CALL(cublasCreate(&handle));}
+
 	DeviceManager();
 	DeviceManager(const int deviceID);
 	DeviceManager(const DeviceManager& obj);
@@ -80,8 +83,9 @@ private:
 	int deviceID;
 	cudaError_t e;
 	cudaDeviceProp deviceProp;
-	cublasHandle_t handle;
 };
+
+cublasHandle_t DeviceManager::handle;
 
 DeviceManager::DeviceManager()
 {
@@ -102,7 +106,6 @@ DeviceManager::DeviceManager(const DeviceManager& obj)
 	this->deviceID = obj.deviceID;
 	this->deviceProp = obj.deviceProp;
 	this->e = obj.e;
-	this->handle = obj.handle;
 }
 
 
@@ -111,7 +114,6 @@ DeviceManager& DeviceManager::operator=(const DeviceManager& obj)
 	this->deviceID = obj.deviceID;
 	this->deviceProp = obj.deviceProp;
 	this->e = obj.e;
-	this->handle = obj.handle;
 	return (*this);
 }
 
@@ -127,7 +129,6 @@ DeviceManager::~DeviceManager() {}
 void DeviceManager::deviceSet()
 {
 	CUDA_SAFE_CALL(cudaSetDevice(deviceID));
-	CUBLAS_SAFE_CALL(cublasCreate(&handle));
 }
 
 void DeviceManager::deviceReset()

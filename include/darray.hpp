@@ -9,68 +9,83 @@
 namespace numcp {
 
 template<typename T_> 
-class Darray : Array<T_>
+class Darray : public Array<T_>
 {
 public:
 	T_* dev_data;
-	std::size_t dev_size;
 
 	Darray();
-	Darray(const std::vector<int>& _shape_);
-	Darray(const std::vector<int>& _shape_, const T_ value);
-	Darray(const std::vector<T_>& src, const std::vector<int>& _shape_);
-	Darray(const Array<T_>& obj);
+	Darray(const DeviceManager& mng, const std::vector<int>& _shape_);
+	Darray(const DeviceManager& mng, const std::vector<int>& _shape_, const T_ value);
+	Darray(const DeviceManager& mng, const std::vector<T_>& src, const std::vector<int>& _shape_);
+	Darray(const DeviceManager& mng, const Array<T_>& obj);
 	Darray(const Darray<T_>& obj);
 	Darray<T_>& operator=(const Darray<T_>& obj);
 	~Darray();
+
+	std::size_t getDev_size() const {return dev_size; }
+	const DeviceManager& getDeviceManager() const { return dev_mng; }
 
 	void to_device();
 	void to_host();
 
 private:
-	DeviceManager* dev_mng;
+	std::size_t dev_size;
+	DeviceManager dev_mng;
 };
 
 
 template<typename T_> 
 Darray<T_>::Darray() : Array<T_>()
 {
+	dev_mng = DeviceManager(0);
 	dev_size = sizeof(*Array<T_>::data) * Array<T_>::_size;
+	dev_mng.deviceSet();
 	cudaMalloc ((void**)&dev_data, dev_size);
 }
 
 template<typename T_> 
-Darray<T_>::Darray(const std::vector<int>& _shape_) : Array<T_>(_shape_)
+Darray<T_>::Darray(const DeviceManager& mng, const std::vector<int>& _shape_) : Array<T_>(_shape_)
 {
+	dev_mng = mng;
 	dev_size = sizeof(*Array<T_>::data) * Array<T_>::_size;
+	dev_mng.deviceSet();
 	cudaMalloc ((void**)&dev_data, dev_size);
 }
 
 template<typename T_> 
-Darray<T_>::Darray(const std::vector<int>& _shape_, const T_ value) : Array<T_>(_shape_, value)
+Darray<T_>::Darray(const DeviceManager& mng, const std::vector<int>& _shape_, const T_ value) : Array<T_>(_shape_, value)
 {
+	dev_mng = mng;
 	dev_size = sizeof(*Array<T_>::data) * Array<T_>::_size;
+	dev_mng.deviceSet();
 	cudaMalloc ((void**)&dev_data, dev_size);
 }
 
 template<typename T_> 
-Darray<T_>::Darray(const std::vector<T_>& src, const std::vector<int>& _shape_) : Array<T_>(src, _shape_)
+Darray<T_>::Darray(const DeviceManager& mng, const std::vector<T_>& src, const std::vector<int>& _shape_) : Array<T_>(src, _shape_)
 {
+	dev_mng = mng;
 	dev_size = sizeof(*Array<T_>::data) * Array<T_>::_size;
+	dev_mng.deviceSet();
 	cudaMalloc ((void**)&dev_data, dev_size);
 }
 
 template<typename T_> 
-Darray<T_>::Darray(const Array<T_>& obj) : Array<T_>(obj)
+Darray<T_>::Darray(const DeviceManager& mng, const Array<T_>& obj) : Array<T_>(obj)
 {
+	dev_mng = mng;
 	dev_size = sizeof(*Array<T_>::data) * Array<T_>::_size;
+	dev_mng.deviceSet();
 	cudaMalloc ((void**)&dev_data, dev_size);
 }
 
 template<typename T_> 
 Darray<T_>::Darray(const Darray<T_>& obj) : Array<T_>(obj)
 {
+	this->dev_mng = obj.getDeviceManager();
 	this->dev_size = obj.dev_size;
+	dev_mng.deviceSet();
 	cudaMalloc ((void**)&this->dev_data, this->dev_size);
 }
 
@@ -78,7 +93,9 @@ template<typename T_>
 Darray<T_>& Darray<T_>::operator=(const Darray<T_>& obj)
 {
 	Array<T_>::operator=(obj);
-	this->dev_size = obj.dev_size;
+	this->dev_mng = obj.getDeviceManager();
+	this->dev_size = obj.getDev_size();
+	dev_mng.deviceSet();
 	cudaMalloc ((void**)&this->dev_data, this->dev_size);
 	return (*this);
 }
@@ -86,6 +103,7 @@ Darray<T_>& Darray<T_>::operator=(const Darray<T_>& obj)
 template<typename T_> 
 Darray<T_>::~Darray()
 {
+	dev_mng.deviceSet();
 	cudaFree(dev_data);
 }
 
@@ -93,6 +111,7 @@ Darray<T_>::~Darray()
 template<typename T_> 
 void Darray<T_>::to_device()
 {
+	dev_mng.deviceSet();
 	CUDA_SAFE_CALL(cudaMemcpy(dev_data, Array<T_>::data, dev_size, cudaMemcpyHostToDevice)); 
 }
 
@@ -100,6 +119,7 @@ void Darray<T_>::to_device()
 template<typename T_> 
 void Darray<T_>::to_host()
 {
+	dev_mng.deviceSet();
 	CUDA_SAFE_CALL(cudaMemcpy(Array<T_>::data, dev_data, dev_size, cudaMemcpyDeviceToHost)); 
 }
 } // namespace numcp
