@@ -88,6 +88,7 @@ Darray<T_>::Darray(const Darray<T_>& obj) : Array<T_>(obj)
 	this->dev_size = obj.dev_size;
 	dev_mng.deviceSet();
 	cudaMalloc ((void**)&this->dev_data, this->dev_size);
+	CUDA_SAFE_CALL(cudaMemcpy(this->dev_data, obj.dev_data, dev_size, cudaMemcpyDeviceToDevice)); 
 }
 
 template<typename T_> 
@@ -98,6 +99,7 @@ Darray<T_>& Darray<T_>::operator=(const Darray<T_>& obj)
 	this->dev_size = obj.getDev_size();
 	dev_mng.deviceSet();
 	cudaMalloc ((void**)&this->dev_data, this->dev_size);
+	CUDA_SAFE_CALL(cudaMemcpy(this->dev_data, obj.dev_data, dev_size, cudaMemcpyDeviceToDevice)); 
 	return (*this);
 }
 

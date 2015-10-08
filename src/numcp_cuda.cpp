@@ -1,6 +1,7 @@
 #include "numcp/device_manager.h"
 #include "numcp/numcp_cblas_helper.h"
 #include "numcp/darray.hpp"
+#include "numcp/util.hpp"
 
 namespace numcp {
 
@@ -176,6 +177,8 @@ Darray<float> cudot (const Darray<float>& lhs, const Darray<float>& rhs)
 					ret.dev_data,
 					ret.shape()[0])
 		);
+		ret.to_host();
+		LOG(INFO) << numcp::max(ret);
 	}
 	return ret;
 }
