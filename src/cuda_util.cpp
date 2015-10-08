@@ -1,17 +1,7 @@
-#ifndef NUMCP_CUDA
-#define NUMCP_CUDA
-
+#include "cuda_util.h"
 #include "numcp_cblas_helper.h"
-#include "darray.hpp"
-#include "util.hpp"
 
 namespace numcp {
-
-Darray<double> cudot(const Darray<double>& lhs, const Darray<double>& rhs); 
-Darray<float> cudot(const Darray<float>& lhs, const Darray<float>& rhs); 
-double cunorm2 (const Darray<double>& ary); 
-float cunorm2 (const Darray<float>& ary); 
-
 
 Darray<double> cudot (const Darray<double>& lhs, const Darray<double>& rhs)
 {
@@ -161,4 +151,3 @@ float cunorm2 (const Darray<float>& ary)
 }
 
 } // namespace numcp
-#endif

@@ -1,11 +1,6 @@
 #ifndef NUMCP_CUDA_HELPER
 #define NUMCP_CUDA_HELPER
 
-#include <iostream>
-#include <string>
-#include <cuda_runtime.h>
-#include <cublas_v2.h>
-#include <glog/logging.h>
 
 #define CUDA_SAFE_CALL(func) \
 do { \
@@ -56,84 +51,4 @@ do { \
 } while(0)
 
 
-namespace numcp {
-
-class DeviceManager
-{
-public:
-	static cublasHandle_t handle;
-	static void CreateHandle() {CUBLAS_SAFE_CALL(cublasCreate(&handle));}
-
-	DeviceManager();
-	DeviceManager(const int deviceID);
-	DeviceManager(const DeviceManager& obj);
-	DeviceManager& operator=(const DeviceManager& obj);
-	friend std::ostream& operator<<(std::ostream& os, const DeviceManager& rhs);
-	~DeviceManager();
-
-	int getDeviceID() const {return deviceID;}
-	std::string getDeviceName() const {return deviceProp.name;}
-	int getDeviceMajor() const {return deviceProp.major;}
-	int getDeviceMinor() const {return deviceProp.minor;}
-
-	void deviceSet() const;
-	void deviceReset() const;
-
-private:
-	int deviceID;
-	cudaError_t e;
-	cudaDeviceProp deviceProp;
-};
-
-cublasHandle_t DeviceManager::handle;
-
-DeviceManager::DeviceManager()
-{
-	deviceID = 0;
-	CUDA_SAFE_CALL(cudaGetDeviceProperties(&deviceProp, deviceID));
-}
-
-
-DeviceManager::DeviceManager(const int deviceID)
-{
-	this->deviceID = deviceID;
-	CUDA_SAFE_CALL(cudaGetDeviceProperties(&deviceProp, deviceID));
-}
-
-
-DeviceManager::DeviceManager(const DeviceManager& obj)
-{
-	this->deviceID = obj.deviceID;
-	this->deviceProp = obj.deviceProp;
-	this->e = obj.e;
-}
-
-
-DeviceManager& DeviceManager::operator=(const DeviceManager& obj)
-{
-	this->deviceID = obj.deviceID;
-	this->deviceProp = obj.deviceProp;
-	this->e = obj.e;
-	return (*this);
-}
-
-
-std::ostream& operator<<(std::ostream& os, const DeviceManager& rhs)
-{
-	os << "GPU Device " << rhs.getDeviceID() << ": " << rhs.getDeviceName() << " with compute capability " << rhs.getDeviceMajor() << "." << rhs.getDeviceMinor();
-	return os;	
-}
-
-DeviceManager::~DeviceManager() {}
-
-void DeviceManager::deviceSet() const
-{
-	CUDA_SAFE_CALL(cudaSetDevice(deviceID));
-}
-
-void DeviceManager::deviceReset() const
-{
-	cudaDeviceReset();
-}
-} // namespace numcp
 #endif
