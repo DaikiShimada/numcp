@@ -9,7 +9,7 @@ DIRS := example
 all: libnumcpcuda.so $(DIRS)
 
 libnumcpcuda.so : src/numcp_cuda.cpp
-	$(CC) $(CFLAGS) -Iinclude -shared -Xcompiler -fPIC -o libnumcpcuda.so src/numcp_cuda.cpp
+	$(CC) $(CFLAGS) -Iinclude -lcublas -shared -Xcompiler -fPIC -o libnumcpcuda.so src/numcp_cuda.cpp
 
 install : libnumcpcuda.so
 	cp -r include/numcp /usr/local/include/

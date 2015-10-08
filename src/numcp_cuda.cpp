@@ -2,7 +2,6 @@
 #include "numcp/numcp_cblas_helper.h"
 #include "numcp/darray.hpp"
 
-
 namespace numcp {
 
 /*******************************
