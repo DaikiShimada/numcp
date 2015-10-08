@@ -20,6 +20,7 @@ public:
 	std::vector<int> shape() const {return _shape;}
 	std::vector<T_> vector() const;
 	const int adr(const std::vector<int> idx) const;
+	void reshape(const std::vector<int> new_shape);
 	Array<T_> swapaxes(const int axis_1, const int axis_2) const;
 	Array<T_> T() const;
 
@@ -210,6 +211,17 @@ const int Array<T_>::adr(const std::vector<int> idx) const
 	}
 
 	return ret;
+}
+
+template<typename T_> 
+void Array<T_>::reshape(const std::vector<int> new_shape)
+{
+	int new_size = std::accumulate(new_shape.begin(), new_shape.end(), 1, std::multiplies<int>());
+	CHECK_EQ (new_size, _size);
+	
+	_ndim = new_shape.size();
+	_shape_ = new_shape;
+	initMemshape();
 }
 
 template<typename T_> 
