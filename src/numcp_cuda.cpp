@@ -177,8 +177,6 @@ Darray<float> cudot (const Darray<float>& lhs, const Darray<float>& rhs)
 					ret.dev_data,
 					ret.shape()[0])
 		);
-		ret.to_host();
-		LOG(INFO) << numcp::max(ret);
 	}
 	return ret;
 }
