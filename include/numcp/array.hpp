@@ -220,7 +220,7 @@ void Array<T_>::reshape(const std::vector<int> new_shape)
 	CHECK_EQ (new_size, _size);
 	
 	_ndim = new_shape.size();
-	_shape_ = new_shape;
+	_shape = new_shape;
 	initMemshape();
 }
 
