@@ -1,7 +1,68 @@
-#include "cuda_util.h"
-#include "numcp_cblas_helper.h"
+#include "numcp/device_manager.h"
+#include "numcp/numcp_cblas_helper.h"
+#include "numcp/darray.hpp"
+
 
 namespace numcp {
+
+/*******************************
+ * Device manager implementation
+ * *****************************/
+cublasHandle_t DeviceManager::handle;
+
+DeviceManager::DeviceManager()
+{
+	deviceID = 0;
+	CUDA_SAFE_CALL(cudaGetDeviceProperties(&deviceProp, deviceID));
+}
+
+
+DeviceManager::DeviceManager(const int deviceID)
+{
+	this->deviceID = deviceID;
+	CUDA_SAFE_CALL(cudaGetDeviceProperties(&deviceProp, deviceID));
+}
+
+
+DeviceManager::DeviceManager(const DeviceManager& obj)
+{
+	this->deviceID = obj.deviceID;
+	this->deviceProp = obj.deviceProp;
+	this->e = obj.e;
+}
+
+
+DeviceManager& DeviceManager::operator=(const DeviceManager& obj)
+{
+	this->deviceID = obj.deviceID;
+	this->deviceProp = obj.deviceProp;
+	this->e = obj.e;
+	return (*this);
+}
+
+
+std::ostream& operator<<(std::ostream& os, const DeviceManager& rhs)
+{
+	os << "GPU Device " << rhs.getDeviceID() << ": " << rhs.getDeviceName() << " with compute capability " << rhs.getDeviceMajor() << "." << rhs.getDeviceMinor();
+	return os;	
+}
+
+DeviceManager::~DeviceManager() {}
+
+void DeviceManager::deviceSet() const
+{
+	CUDA_SAFE_CALL(cudaSetDevice(deviceID));
+}
+
+void DeviceManager::deviceReset() const
+{
+	cudaDeviceReset();
+}
+
+
+/*******************************
+ * Darray util implementation
+ * *****************************/
 
 Darray<double> cudot (const Darray<double>& lhs, const Darray<double>& rhs)
 {
