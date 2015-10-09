@@ -9,7 +9,7 @@
 namespace numcp {
 
 //template<typename T_> Array<T_> dot (Array<T_>& lhs, Array<T_>& rhs); 
-Array<double> dot (const Array<double>& lhs, const Array<double>& rhs); // double support only
+//Array<double> dot (const Array<double>& lhs, const Array<double>& rhs); // double support only
 template<typename T_> T_ norm (const Array<T_>& ary); 
 template<typename T_> T_ sum (const Array<T_>& ary); 
 template<typename T_> T_ mean (const Array<T_>& ary); 
@@ -18,7 +18,7 @@ template<typename T_> T_ min (const Array<T_>& ary);
 template<typename T_> Array<T_> ones (const std::vector<int> shape); 
 template<typename T_> Array<T_> zeros (const std::vector<int> shape); 
 
-
+/*
 Array<double> dot (const Array<double>& lhs, const Array<double>& rhs)
 {
 	CHECK_EQ(lhs.ndim(), rhs.ndim());
@@ -65,6 +65,7 @@ Array<double> dot (const Array<double>& lhs, const Array<double>& rhs)
 	}
 	return ret;
 }
+*/
 
 
 template<typename T_>
