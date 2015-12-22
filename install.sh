@@ -9,3 +9,4 @@ fi
 cp ./include/*.hpp ${incdir}
 cp ./include/*.h ${incdir}
 echo "Installation done."
+
